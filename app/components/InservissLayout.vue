@@ -1,12 +1,40 @@
 <script setup lang="ts">
-// Принимаем структурированный объект проекта как входной параметр (prop)
-defineProps<{
-  project: any;
-}>();
+defineProps({
+  project: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
 
 <template>
-  <main class="min-h-screen bg-white">
+  <main class="min-h-screen bg-white text-[#0B0B0F] font-sans antialiased">
+    <!-- NAVIGATION BAR -->
+    <header
+      class="sticky top-0 z-50 border-b border-gray-100/80 bg-white/90 backdrop-blur-md"
+    >
+      <div
+        class="mx-auto flex max-w-[90rem] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8"
+      >
+        <NuxtLink
+          to="/"
+          class="group inline-flex min-h-[44px] items-center gap-2.5 rounded-full border border-gray-200 bg-white px-4 text-sm font-semibold text-ink shadow-xs transition-all duration-300 hover:border-indigo-500/40 hover:bg-gray-50"
+        >
+          <span
+            class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-xs transition-transform duration-300 group-hover:-translate-x-0.5"
+            >←</span
+          >
+          Back to Home
+        </NuxtLink>
+        <img
+          src="/assets/logo_example.png"
+          alt="Olena Perepelychna"
+          class="h-10 w-auto"
+        />
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
     <section class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 lg:px-8">
       <div
         class="relative overflow-hidden rounded-2xl border border-indigo-500/20 bg-white p-6 sm:p-10 lg:p-12 shadow-soft bg-[radial-gradient(circle_at_20%_30%,rgba(99,102,241,0.07)_0%,transparent_45%)]"
@@ -39,7 +67,7 @@ defineProps<{
                 :href="project.url"
                 target="_blank"
                 class="rounded-full border border-blue-300 bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-600 hover:bg-blue-100"
-                >www.inserviss.app</a
+                >Open Live Site</a
               >
             </div>
           </div>
@@ -61,29 +89,18 @@ defineProps<{
       </div>
     </section>
 
-    <section
-      class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 lg:px-8 border-t border-gray-100"
-    >
-      <div
-        class="mb-10 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
-      >
-        <div>
-          <p
-            class="text-xs font-bold uppercase tracking-[0.24em] text-[#6366F1]"
-          >
-            {{ project.challenge_num }} — {{ project.challenge_tag }}
-          </p>
-          <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-            {{ project.challenge_title }}
-          </h2>
-        </div>
-        <p class="max-w-md text-sm text-gray-500">
-          {{ project.challenge_subtitle }}
-        </p>
-      </div>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12 gap-5">
+    <!-- CHALLENGE SECTION -->
+    <section class="mx-auto max-w-[90rem] px-4 py-12 border-t border-gray-100">
+      <p class="text-xs font-bold uppercase tracking-[0.24em] text-[#6366F1]">
+        {{ project.challenge_num }} — {{ project.challenge_tag }}
+      </p>
+      <h2 class="text-2xl font-bold mt-2 text-ink">
+        {{ project.challenge_title }}
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">{{ project.challenge_subtitle }}</p>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
         <div
-          class="rounded-2xl border border-indigo-500/20 bg-white p-6 sm:p-8 lg:col-span-8 space-y-4 shadow-xs"
+          class="rounded-2xl border border-indigo-500/20 bg-white p-6 lg:col-span-8 space-y-4 shadow-xs"
         >
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
             Core insight
@@ -100,6 +117,7 @@ defineProps<{
       </div>
     </section>
 
+    <!-- RESULTS INFOGRAPHICS -->
     <section class="mx-auto max-w-[90rem] px-4 py-12 border-t border-gray-100">
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-3 lg:gap-6">
         <div
@@ -135,7 +153,8 @@ defineProps<{
       </div>
     </section>
 
-    <section class="mx-auto max-w-[90rem] px-4 py-6">
+    <!-- TESTIMONIAL -->
+    <section class="mx-auto max-w-[90rem] px-4 py-12 border-t border-gray-100">
       <div
         class="rounded-2xl border border-gray-100 bg-[#F3F4F6] p-6 sm:p-10 shadow-xs"
       >
@@ -146,7 +165,7 @@ defineProps<{
         </blockquote>
         <div class="flex items-center gap-4 pt-4">
           <div
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-[#6366F1] font-bold text-white shadow-xs"
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-[#6366F1] font-bold text-white"
           >
             A
           </div>
@@ -156,6 +175,9 @@ defineProps<{
             </p>
             <p class="text-xs text-gray-500 font-medium">
               {{ project.testimonial_role }}
+            </p>
+            <p class="text-[11px] text-gray-400">
+              {{ project.testimonial_meta }}
             </p>
           </div>
         </div>
