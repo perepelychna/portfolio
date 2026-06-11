@@ -8,7 +8,7 @@ const { data: projects } = await useAsyncData("projects-list", () => {
 
 const activeFilter = ref("all");
 
-// Фильтрация проектов по тегам
+// ИСПРАВЛЕНО: Теперь фильтрация строго использует переменную projects
 const filteredProjects = computed(() => {
   if (!projects.value) return [];
   if (activeFilter.value === "all") return projects.value;
@@ -248,10 +248,6 @@ function setFilter(tag: string) {
                     class="rounded-full bg-indigo-500/10 px-3 py-1.5 text-[11px] font-semibold text-indigo-700"
                     >UI/UX</span
                   >
-                  <span
-                    class="rounded-full bg-indigo-500/10 px-3 py-1.5 text-[11px] font-semibold text-indigo-700"
-                    >ZHdK 2025–Present</span
-                  >
                 </div>
               </div>
 
@@ -386,7 +382,7 @@ function setFilter(tag: string) {
                 <!-- Мокапы телефонов для Inserviss -->
                 <div class="flex justify-center gap-3 sm:gap-4 lg:justify-end">
                   <div
-                    class="w-[28%] max-w-[110px] p-2 sm:p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl"
+                    class="w-[28%] max-w-[110px] p-2 bg-[#12121A] border border-white/8 rounded-xl shadow-xl"
                   >
                     <div
                       class="mb-2 h-1.5 w-8 rounded-full bg-white/10 mx-auto"
@@ -402,15 +398,10 @@ function setFilter(tag: string) {
                       >
                         Healthcare
                       </div>
-                      <div
-                        class="rounded-md bg-white/5 p-2 text-[8px] text-gray-400 text-center"
-                      >
-                        Home
-                      </div>
                     </div>
                   </div>
                   <div
-                    class="w-[32%] max-w-[120px] p-2 sm:p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl text-center"
+                    class="w-[32%] max-w-[120px] p-2 bg-[#12121A] border border-white/8 rounded-xl shadow-xl text-center text-white"
                   >
                     <div
                       class="mb-2 flex justify-between text-[7px] text-gray-500"
@@ -436,7 +427,7 @@ function setFilter(tag: string) {
                     </div>
                   </div>
                   <div
-                    class="w-[28%] max-w-[110px] p-2 sm:p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl"
+                    class="w-[28%] max-w-[110px] p-2 bg-[#12121A] border border-white/8 rounded-xl shadow-xl"
                   >
                     <div
                       class="mb-2 h-1.5 w-8 rounded-full bg-white/10 mx-auto"
@@ -481,10 +472,10 @@ function setFilter(tag: string) {
                   <p class="text-sm leading-relaxed text-gray-300 sm:text-base">
                     An interactive system that visualizes the brain's response
                     to specific stimuli in real-time — a wearable
-                    neuro-monitoring device for evidence-based rehabilitation.
-                    <span class="font-medium text-white"
-                      >{{ project.duration || "2018–2019" }}.</span
-                    >
+                    neuro-monitoring device.
+                    <span class="font-medium text-white">{{
+                      project.duration || "2018–2019"
+                    }}</span>
                   </p>
                   <div class="flex flex-wrap gap-2">
                     <span
@@ -498,7 +489,7 @@ function setFilter(tag: string) {
                 <!-- Графика для Neiro Trace -->
                 <div class="flex justify-center gap-4 lg:justify-end">
                   <div
-                    class="w-[42%] max-w-[160px] p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-2xl"
+                    class="w-[42%] max-w-[160px] p-2.5 bg-[#12121A] border border-white/8 rounded-xl shadow-2xl"
                   >
                     <div
                       class="mb-2 flex items-center justify-between text-[8px] text-gray-500"
@@ -526,7 +517,7 @@ function setFilter(tag: string) {
                     </div>
                   </div>
                   <div
-                    class="w-[42%] max-w-[160px] p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-2xl"
+                    class="w-[42%] max-w-[160px] p-2.5 bg-[#12121A] border border-white/8 rounded-xl shadow-2xl"
                   >
                     <div class="mb-2 text-[8px] text-gray-500">Neural map</div>
                     <div
@@ -541,62 +532,40 @@ function setFilter(tag: string) {
                 </div>
               </div>
             </NuxtLink>
-          </div>
 
-          <!-- СЕТКА ОСТАЛЬНЫХ ТРЕХ КЕЙСОВ (iBUMPER, Gluten Free, Nicky Tanner) -->
-          <div
-            class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6 mt-2"
-          >
-            <template v-for="project in filteredProjects" :key="project.path">
-              <NuxtLink
-                v-if="
-                  [
-                    'iBUMPER',
-                    'Gluten Free Cooking Easy',
-                    'Nicky Tanner',
-                  ].includes(project.title)
-                "
-                :to="project.path"
-                class="group block rounded-2xl border border-gray-100 bg-[#F3F4F6] p-6 shadow-sm transition-all duration-300 hover:shadow-lift"
+            <!-- ТРЕТИЙ ТИП: ДЕФОЛТНЫЕ КАРТОЧКИ ДЛЯ ОСТАЛЬНЫХ КЕЙСОВ -->
+            <NuxtLink
+              v-else-if="
+                [
+                  'iBUMPER',
+                  'Gluten Free Cooking Easy',
+                  'Nicky Tanner',
+                ].includes(project.title)
+              "
+              :to="project.path"
+              class="group block rounded-2xl border border-gray-100 bg-[#F3F4F6] p-6 shadow-sm transition-all duration-300 hover:shadow-lift mt-2"
+            >
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-white shadow-xs bg-[#6366F1]"
               >
-                <!-- Цветные круглые иконки на базе названия проекта -->
-                <div
-                  :class="[
-                    'mb-4 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-white shadow-xs',
-                    project.title.includes('iBUMPER')
-                      ? 'bg-[#6366F1]'
-                      : project.title.includes('Gluten')
-                        ? 'bg-amber-400 text-black'
-                        : 'bg-sky-500',
-                  ]"
+                {{ project.title.substring(0, 2).toUpperCase() }}
+              </div>
+              <h3 class="text-lg font-bold text-black mt-4">
+                {{ project.title }}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-gray-600">
+                {{ project.subtitle || project.description }}
+              </p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span
+                  v-for="tag in project.tags?.split(' ')"
+                  :key="tag"
+                  class="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[10px] font-medium text-gray-600 uppercase"
                 >
-                  {{
-                    project.title.includes("iBUMPER")
-                      ? "iB"
-                      : project.title.includes("Gluten")
-                        ? "GF"
-                        : "NT"
-                  }}
-                </div>
-
-                <h3 class="text-lg font-bold text-black">
-                  {{ project.title }}
-                </h3>
-                <p class="mt-2 text-sm leading-relaxed text-gray-600">
-                  {{ project.description || project.subtitle }}
-                </p>
-
-                <div class="mt-4 flex flex-wrap gap-2">
-                  <span
-                    v-for="tag in project.tags?.split(' ')"
-                    :key="tag"
-                    class="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[10px] font-medium text-gray-600 uppercase"
-                  >
-                    {{ tag }}
-                  </span>
-                </div>
-              </NuxtLink>
-            </template>
+                  {{ tag }}
+                </span>
+              </div>
+            </NuxtLink>
           </div>
         </div>
       </section>
