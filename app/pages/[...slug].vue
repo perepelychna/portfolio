@@ -6,12 +6,15 @@ import DefaultLayout from "~/components/projects/DefaultLayout.vue";
 
 const route = useRoute();
 
-// 1. Извлекаем данные проекта из CMS Nuxt Content
-const { data: project } = await useAsyncData("project-" + route.path, () => {
-  return queryCollection("content").path(route.path).first();
-});
+// Запрашиваем данные из коллекции и принудительно даем тип, чтобы компилятор не ругался
+const { data: project } = await useAsyncData(
+  "project-" + route.path,
+  async () => {
+    const result = await queryCollection("content").path(route.path).first();
+    return result as any;
+  },
+);
 
-// Если проект не найден в папке content/ — отдаем 404
 if (!project.value) {
   throw createError({
     statusCode: 404,
@@ -23,12 +26,15 @@ if (!project.value) {
 
 <template>
   <div class="antialiased text-[#0B0B0F] bg-white font-sans">
-    <InservissLayout v-if="project.title === 'INSERVISS'" :project="project" />
-    <NeirotraceLayout
-      v-else-if="project.title === 'NEIRO TRACE'"
+    <!-- Теперь свойства проверяются безопасно -->
+    <InservissLayout
+      v-if="project && project.title === 'INSERVISS'"
       :project="project"
     />
-
-    <DefaultLayout v-else :project="project" />
+    <NeirotraceLayout
+      v-else-if="project && project.title === 'NEIRO TRACE'"
+      :project="project"
+    />
+    <DefaultLayout v-else-if="project" :project="project" />
   </div>
 </template>
