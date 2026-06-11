@@ -2,17 +2,18 @@
 import { ref, computed } from "vue";
 
 // Запрашиваем данные из папки content/projects
-const { data: allProjects } = await useAsyncData("projects-list", () =>
-  queryCollection("content").where("path", "LIKE", "/projects/%").all(),
-);
+const { data: projects } = await useAsyncData("projects-list", () => {
+  return queryCollection("content").where("path", "LIKE", "/projects/%").all();
+});
 
 const activeFilter = ref("all");
 
+// Фильтрация проектов по тегам
 const filteredProjects = computed(() => {
-  if (!allProjects.value) return [];
-  if (activeFilter.value === "all") return allProjects.value;
+  if (!projects.value) return [];
+  if (activeFilter.value === "all") return projects.value;
 
-  return allProjects.value.filter((project) => {
+  return projects.value.filter((project) => {
     const tags = project.tags || "";
     return tags.includes(activeFilter.value);
   });
@@ -353,7 +354,7 @@ function setFilter(tag: string) {
                   <div
                     class="text-xs font-bold uppercase tracking-widest text-gray-400"
                   >
-                    01
+                    {{ project.challenge_num || "01" }}
                   </div>
                   <h3
                     class="text-2xl font-bold tracking-tight text-black sm:text-3xl"
@@ -361,13 +362,17 @@ function setFilter(tag: string) {
                     {{ project.title }}
                   </h3>
                   <p class="text-sm font-medium text-[#4F46E5] sm:text-base">
-                    Marketplace for Services in One App
+                    {{
+                      project.subtitle || "Marketplace for Services in One App"
+                    }}
                   </p>
                   <p class="text-sm leading-relaxed text-gray-600 sm:text-base">
                     End-to-end creation of the Inserviss ecosystem, merging
                     founding-level business strategy with high-precision UI/UX
                     and a soulful brand identity.
-                    <span class="font-medium text-black">2017–Present.</span>
+                    <span class="font-medium text-black"
+                      >{{ project.duration || "2017–Present" }}.</span
+                    >
                   </p>
                   <div class="flex flex-wrap gap-2">
                     <span
@@ -381,7 +386,7 @@ function setFilter(tag: string) {
                 <!-- Мокапы телефонов для Inserviss -->
                 <div class="flex justify-center gap-3 sm:gap-4 lg:justify-end">
                   <div
-                    class="w-[28%] max-w-[110px] p-2 sm:p-2.5 bg-linear-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl"
+                    class="w-[28%] max-w-[110px] p-2 sm:p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl"
                   >
                     <div
                       class="mb-2 h-1.5 w-8 rounded-full bg-white/10 mx-auto"
@@ -405,7 +410,7 @@ function setFilter(tag: string) {
                     </div>
                   </div>
                   <div
-                    class="w-[32%] max-w-[120px] p-2 sm:p-2.5 bg-linear-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl text-center"
+                    class="w-[32%] max-w-[120px] p-2 sm:p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl text-center"
                   >
                     <div
                       class="mb-2 flex justify-between text-[7px] text-gray-500"
@@ -431,7 +436,7 @@ function setFilter(tag: string) {
                     </div>
                   </div>
                   <div
-                    class="w-[28%] max-w-[110px] p-2 sm:p-2.5 bg-linear-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl"
+                    class="w-[28%] max-w-[110px] p-2 sm:p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-xl"
                   >
                     <div
                       class="mb-2 h-1.5 w-8 rounded-full bg-white/10 mx-auto"
@@ -477,7 +482,9 @@ function setFilter(tag: string) {
                     An interactive system that visualizes the brain's response
                     to specific stimuli in real-time — a wearable
                     neuro-monitoring device for evidence-based rehabilitation.
-                    <span class="font-medium text-white">2018–2019.</span>
+                    <span class="font-medium text-white"
+                      >{{ project.duration || "2018–2019" }}.</span
+                    >
                   </p>
                   <div class="flex flex-wrap gap-2">
                     <span
@@ -491,13 +498,13 @@ function setFilter(tag: string) {
                 <!-- Графика для Neiro Trace -->
                 <div class="flex justify-center gap-4 lg:justify-end">
                   <div
-                    class="w-[42%] max-w-[160px] p-2.5 bg-linear-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-2xl"
+                    class="w-[42%] max-w-[160px] p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-2xl"
                   >
                     <div
                       class="mb-2 flex items-center justify-between text-[8px] text-gray-500"
                     >
-                      <span>Session</span
-                      ><span
+                      <span>Session</span>
+                      <span
                         class="h-1.5 w-1.5 rounded-full bg-emerald-400"
                       ></span>
                     </div>
@@ -519,7 +526,7 @@ function setFilter(tag: string) {
                     </div>
                   </div>
                   <div
-                    class="w-[42%] max-w-[160px] p-2.5 bg-linear-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-2xl"
+                    class="w-[42%] max-w-[160px] p-2.5 bg-gradient-to-b from-[#12121A] to-[#0A0A10] border border-white/8 rounded-xl shadow-2xl"
                   >
                     <div class="mb-2 text-[8px] text-gray-500">Neural map</div>
                     <div
@@ -576,7 +583,7 @@ function setFilter(tag: string) {
                   {{ project.title }}
                 </h3>
                 <p class="mt-2 text-sm leading-relaxed text-gray-600">
-                  {{ project.description }}
+                  {{ project.description || project.subtitle }}
                 </p>
 
                 <div class="mt-4 flex flex-wrap gap-2">
