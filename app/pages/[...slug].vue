@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import InservissLayout from "~/app/components/projects/InservissLayout.vue";
-import NeirotraceLayout from "~/app/components/projects/NeirotraceLayout.vue";
-import DefaultLayout from "~/app/components/projects/DefaultLayout.vue";
+import InservissLayout from "~/components/projects/InservissLayout.vue";
+import NeirotraceLayout from "~/components/projects/NeirotraceLayout.vue";
+import DefaultLayout from "~/components/projects/DefaultLayout.vue";
 
 const route = useRoute();
 
