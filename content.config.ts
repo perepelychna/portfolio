@@ -68,8 +68,68 @@ const projectSchema = z.object({
   outcome_cards: stringList,
 })
 
+const aboutSchema = z.object({
+  name: z.string().optional(),
+  role: z.string().optional(),
+  bio: z.string().optional(),
+  philosophy_quote: z.string().optional(),
+  philosophy_text: z.string().optional(),
+  stat_years_value: z.string().optional(),
+  stat_years_label: z.string().optional(),
+  stat_projects_value: z.string().optional(),
+  stat_projects_label: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  location: z.string().optional(),
+  resume_url: z.string().optional(),
+  strategy_skills: stringList,
+  design_skills: stringList,
+  software_tools: stringList,
+  ai_tools: stringList,
+  experience_featured: z
+    .array(
+      z.object({
+        period: z.string(),
+        company: z.string(),
+        role: z.string(),
+        description: z.string(),
+        link: z.string().optional(),
+        initials: z.string().optional(),
+      }),
+    )
+    .optional(),
+  experience_other: z
+    .array(
+      z.object({
+        period: z.string(),
+        company: z.string(),
+        role: z.string(),
+        description: z.string(),
+        link: z.string().optional(),
+      }),
+    )
+    .optional(),
+  education: z
+    .array(
+      z.object({
+        school: z.string(),
+        degree: z.string(),
+        period: z.string(),
+        description: z.string(),
+        tag: z.string().optional(),
+        icon: z.string().optional(),
+      }),
+    )
+    .optional(),
+})
+
 export default defineContentConfig({
   collections: {
+    about: defineCollection({
+      type: 'data',
+      source: 'about.yaml',
+      schema: aboutSchema,
+    }),
     content: defineCollection({
       type: 'page',
       source: {
