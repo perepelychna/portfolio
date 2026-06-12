@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import InservissLayout from '~/components/projects/InservissLayout.vue'
 import NeirotraceLayout from '~/components/projects/NeirotraceLayout.vue'
+import IbumperLayout from '~/components/projects/IbumperLayout.vue'
+import GlutenfreeLayout from '~/components/projects/GlutenfreeLayout.vue'
+import NickytannerLayout from '~/components/projects/NickytannerLayout.vue'
 import DefaultLayout from '~/components/projects/DefaultLayout.vue'
 import {
   fetchProjectByPath,
@@ -37,6 +40,18 @@ const isProjectPage = route.path.startsWith('/projects/')
       />
       <NeirotraceLayout
         v-else-if="layoutType === 'neirotrace'"
+        :project="projectData"
+      />
+      <IbumperLayout
+        v-else-if="layoutType === 'ibumper'"
+        :project="projectData"
+      />
+      <GlutenfreeLayout
+        v-else-if="layoutType === 'glutenfree'"
+        :project="projectData"
+      />
+      <NickytannerLayout
+        v-else-if="layoutType === 'nickytanner'"
         :project="projectData"
       />
       <DefaultLayout

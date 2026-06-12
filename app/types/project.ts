@@ -5,7 +5,13 @@ export interface ProjectRecord {
   path?: string
   stem?: string
   tags?: string | string[]
-  layoutType?: 'inserviss' | 'neirotrace' | 'default'
+  layoutType?:
+    | 'inserviss'
+    | 'neirotrace'
+    | 'ibumper'
+    | 'glutenfree'
+    | 'nickytanner'
+    | 'default'
   duration?: string
   role?: string
   client?: string
@@ -84,14 +90,28 @@ export function normalizeProjects(
     .filter((item): item is ProjectRecord => item !== null)
 }
 
-export function resolveLayoutType(
-  project: ProjectRecord,
-): 'inserviss' | 'neirotrace' | 'default' {
-  if (project.layoutType === 'inserviss' || project.title === 'INSERVISS') {
-    return 'inserviss'
+export type ProjectLayoutType =
+  | 'inserviss'
+  | 'neirotrace'
+  | 'ibumper'
+  | 'glutenfree'
+  | 'nickytanner'
+  | 'default'
+
+const LAYOUT_BY_TITLE: Record<string, ProjectLayoutType> = {
+  INSERVISS: 'inserviss',
+  'NEIRO TRACE': 'neirotrace',
+  iBUMPER: 'ibumper',
+  'Gluten Free Cooking Easy': 'glutenfree',
+  'Nicky Tanner': 'nickytanner',
+}
+
+export function resolveLayoutType(project: ProjectRecord): ProjectLayoutType {
+  if (project.layoutType && project.layoutType !== 'default') {
+    return project.layoutType
   }
-  if (project.layoutType === 'neirotrace' || project.title === 'NEIRO TRACE') {
-    return 'neirotrace'
+  if (project.title && LAYOUT_BY_TITLE[project.title]) {
+    return LAYOUT_BY_TITLE[project.title]
   }
   return 'default'
 }
