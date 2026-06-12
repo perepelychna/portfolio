@@ -1,39 +1,47 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-import InservissLayout from "~/components/projects/InservissLayout.vue";
-import NeirotraceLayout from "~/components/projects/NeirotraceLayout.vue";
-import DefaultLayout from "~/components/projects/DefaultLayout.vue";
+import InservissLayout from '~/components/projects/InservissLayout.vue'
+import NeirotraceLayout from '~/components/projects/NeirotraceLayout.vue'
+import DefaultLayout from '~/components/projects/DefaultLayout.vue'
+import {
+  resolveLayoutType,
+  type ProjectRecord,
+} from '~/types/project'
 
-const route = useRoute();
+const route = useRoute()
 
-// Запрашиваем данные из коллекции
-const { data: project } = await useAsyncData(
-  "project-" + route.path,
+const { data: project } = await useAsyncData<ProjectRecord | null>(
+  `project-${route.path}`,
   async () => {
-    const result = await queryCollection("content").path(route.path).first();
-    return result as any;
+    const result = await queryCollection('content').path(route.path).first()
+    return (result ?? null) as ProjectRecord | null
   },
-);
+)
 
 if (!project.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: "Case Study Not Found",
+    statusMessage: 'Case Study Not Found',
     fatal: true,
-  });
+  })
 }
+
+const projectData = project.value
+const layoutType = resolveLayoutType(projectData)
 </script>
 
 <template>
   <div class="antialiased text-[#0B0B0F] bg-white font-sans">
     <InservissLayout
-      v-if="project && project.title === 'INSERVISS'"
-      :project="project"
+      v-if="layoutType === 'inserviss'"
+      :project="projectData"
     />
     <NeirotraceLayout
-      v-else-if="project && project.title === 'NEIRO TRACE'"
-      :project="project"
+      v-else-if="layoutType === 'neirotrace'"
+      :project="projectData"
     />
-    <DefaultLayout v-else-if="project" :project="project" />
+    <DefaultLayout
+      v-else
+      :project="projectData"
+    />
   </div>
 </template>

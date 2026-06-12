@@ -1,26 +1,36 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed } from 'vue'
+import { projectTags, type ProjectRecord } from '~/types/project'
 
-// Запрашиваем данные из папки content/projects
-const { data: projects } = await useAsyncData("projects-list", () => {
-  return queryCollection("content").where("path", "LIKE", "/projects/%").all();
-});
+const { data: projects } = await useAsyncData<ProjectRecord[]>(
+  'projects-list',
+  async () => {
+    const result = await queryCollection('content')
+      .where('path', 'LIKE', '/projects/%')
+      .all()
+    return (result ?? []) as ProjectRecord[]
+  },
+)
 
-const activeFilter = ref("all");
+const activeFilter = ref('all')
 
-// ИСПРАВЛЕНО: Теперь фильтрация строго использует переменную projects
 const filteredProjects = computed(() => {
-  if (!projects.value) return [];
-  if (activeFilter.value === "all") return projects.value;
+  const list = projects.value ?? []
+  if (activeFilter.value === 'all') {
+    return list
+  }
 
-  return projects.value.filter((project) => {
-    const tags = project.tags || "";
-    return tags.includes(activeFilter.value);
-  });
-});
+  return list.filter((project) =>
+    projectTags(project).includes(activeFilter.value),
+  )
+})
 
 function setFilter(tag: string) {
-  activeFilter.value = tag;
+  activeFilter.value = tag
+}
+
+function projectTagList(project: ProjectRecord): string[] {
+  return projectTags(project)
 }
 </script>
 
@@ -372,7 +382,7 @@ function setFilter(tag: string) {
                   </p>
                   <div class="flex flex-wrap gap-2">
                     <span
-                      v-for="tag in project.tags?.split(' ')"
+                      v-for="tag in projectTagList(project)"
                       :key="tag"
                       class="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-medium text-gray-600 uppercase"
                       >{{ tag }}</span
@@ -479,7 +489,7 @@ function setFilter(tag: string) {
                   </p>
                   <div class="flex flex-wrap gap-2">
                     <span
-                      v-for="tag in project.tags?.split(' ')"
+                      v-for="tag in projectTagList(project)"
                       :key="tag"
                       class="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] font-medium text-gray-200 uppercase"
                       >{{ tag }}</span
@@ -558,7 +568,7 @@ function setFilter(tag: string) {
               </p>
               <div class="mt-4 flex flex-wrap gap-2">
                 <span
-                  v-for="tag in project.tags?.split(' ')"
+                  v-for="tag in projectTagList(project)"
                   :key="tag"
                   class="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[10px] font-medium text-gray-600 uppercase"
                 >
