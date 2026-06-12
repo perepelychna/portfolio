@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { projectTags, type ProjectRecord } from '~/types/project'
+import {
+  fetchAllProjects,
+  projectTags,
+  type ProjectRecord,
+} from '~/types/project'
 
 const { data: projects } = await useAsyncData<ProjectRecord[]>(
   'projects-list',
-  async () => {
-    const result = await queryCollection('content')
-      .where('path', 'LIKE', '/projects/%')
-      .all()
-    return (result ?? []) as ProjectRecord[]
-  },
+  () => fetchAllProjects(),
 )
 
 const activeFilter = ref('all')
@@ -545,13 +544,7 @@ function projectTagList(project: ProjectRecord): string[] {
 
             <!-- ТРЕТИЙ ТИП: ДЕФОЛТНЫЕ КАРТОЧКИ ДЛЯ ОСТАЛЬНЫХ КЕЙСОВ -->
             <NuxtLink
-              v-else-if="
-                [
-                  'iBUMPER',
-                  'Gluten Free Cooking Easy',
-                  'Nicky Tanner',
-                ].includes(project.title)
-              "
+              v-else-if="project.path"
               :to="project.path"
               class="group block rounded-2xl border border-gray-100 bg-[#F3F4F6] p-6 shadow-sm transition-all duration-300 hover:shadow-lift mt-2"
             >

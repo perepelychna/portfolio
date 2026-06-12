@@ -3,21 +3,19 @@ import InservissLayout from '~/components/projects/InservissLayout.vue'
 import NeirotraceLayout from '~/components/projects/NeirotraceLayout.vue'
 import DefaultLayout from '~/components/projects/DefaultLayout.vue'
 import {
+  fetchProjectByPath,
   resolveLayoutType,
   type ProjectRecord,
 } from '~/types/project'
 
 const route = useRoute()
 
-const { data: project } = await useAsyncData<ProjectRecord | null>(
-  `project-${route.path}`,
-  async () => {
-    const result = await queryCollection('content').path(route.path).first()
-    return (result ?? null) as ProjectRecord | null
-  },
+const { data: page } = await useAsyncData<ProjectRecord | null>(
+  `page-${route.path}`,
+  () => fetchProjectByPath(route.path),
 )
 
-if (!project.value) {
+if (!page.value) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Case Study Not Found',
@@ -25,23 +23,40 @@ if (!project.value) {
   })
 }
 
-const projectData = project.value
+const projectData = page.value
 const layoutType = resolveLayoutType(projectData)
+const isProjectPage = route.path.startsWith('/projects/')
 </script>
 
 <template>
   <div class="antialiased text-[#0B0B0F] bg-white font-sans">
-    <InservissLayout
-      v-if="layoutType === 'inserviss'"
-      :project="projectData"
-    />
-    <NeirotraceLayout
-      v-else-if="layoutType === 'neirotrace'"
-      :project="projectData"
-    />
-    <DefaultLayout
-      v-else
-      :project="projectData"
-    />
+    <template v-if="isProjectPage">
+      <InservissLayout
+        v-if="layoutType === 'inserviss'"
+        :project="projectData"
+      />
+      <NeirotraceLayout
+        v-else-if="layoutType === 'neirotrace'"
+        :project="projectData"
+      />
+      <DefaultLayout
+        v-else
+        :project="projectData"
+      />
+    </template>
+
+    <main v-else class="mx-auto max-w-3xl px-4 py-16">
+      <ContentRenderer
+        v-if="page?.body"
+        :value="page"
+        class="prose prose-neutral max-w-none"
+      />
+      <div v-else class="space-y-4">
+        <h1 class="text-3xl font-bold">{{ projectData.title }}</h1>
+        <p v-if="projectData.description" class="text-gray-600">
+          {{ projectData.description }}
+        </p>
+      </div>
+    </main>
   </div>
 </template>
