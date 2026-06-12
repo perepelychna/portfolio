@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import {
   fetchAllProjects,
+  projectMatchesFilter,
   projectTags,
   type ProjectRecord,
 } from '~/types/project'
@@ -18,12 +19,8 @@ let revealObserver: IntersectionObserver | null = null
 
 const filteredProjects = computed(() => {
   const list = projects.value ?? []
-  if (activeFilter.value === 'all') {
-    return list
-  }
-
   return list.filter((project) =>
-    projectTags(project).includes(activeFilter.value),
+    projectMatchesFilter(project, activeFilter.value),
   )
 })
 
@@ -47,6 +44,12 @@ const gridProjects = computed(() => {
 
 function setFilter(tag: string) {
   activeFilter.value = tag
+
+  nextTick(() => {
+    document
+      .getElementById('selected-work')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
 }
 
 function projectTagList(project: ProjectRecord): string[] {
@@ -252,6 +255,19 @@ onUnmounted(() => {
                   type="button"
                   class="rounded-full px-3 py-2.5 transition-all duration-300 sm:px-4"
                   :class="
+                    activeFilter === 'all'
+                      ? 'bg-white/14 text-white'
+                      : 'hover:text-white'
+                  "
+                  @click="setFilter('all')"
+                >
+                  All
+                </button>
+                <span class="hidden self-center text-white/20 sm:inline">|</span>
+                <button
+                  type="button"
+                  class="rounded-full px-3 py-2.5 transition-all duration-300 sm:px-4"
+                  :class="
                     activeFilter === 'business'
                       ? 'bg-white/14 text-white'
                       : 'hover:text-white'
@@ -419,7 +435,14 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <div class="flex flex-col gap-5 lg:gap-6">
+        <p
+          v-if="filteredProjects.length === 0"
+          class="rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center text-sm text-gray-500"
+        >
+          No projects match this filter yet.
+        </p>
+
+        <div v-else class="flex flex-col gap-5 lg:gap-6">
           <template v-for="(project, index) in featuredProjects" :key="project.path">
             <!-- INSERVISS -->
             <NuxtLink

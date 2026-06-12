@@ -8,7 +8,9 @@ const projectSchema = z.object({
   markets: z.string().optional(),
   duration: z.string().optional(),
   url: z.string().optional(),
-  tags: z.string().optional(),
+  tags: z
+    .union([z.string(), z.array(z.string())])
+    .optional(),
   layoutType: z.enum(['inserviss', 'neirotrace', 'default']).optional(),
   challenge_num: z.string().optional(),
   challenge_tag: z.string().optional(),

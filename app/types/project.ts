@@ -32,6 +32,27 @@ export interface ProjectRecord {
   [key: string]: unknown
 }
 
+function parseTagsValue(value: unknown): string[] {
+  if (!value) {
+    return []
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map((tag) => String(tag).trim().toLowerCase())
+      .filter(Boolean)
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split(/[\s,]+/)
+      .map((tag) => tag.trim().toLowerCase())
+      .filter(Boolean)
+  }
+
+  return []
+}
+
 export function normalizeProject(raw: ProjectRecord | null | undefined): ProjectRecord | null {
   if (!raw) {
     return null
@@ -42,12 +63,15 @@ export function normalizeProject(raw: ProjectRecord | null | undefined): Project
       ? (raw.meta as Record<string, unknown>)
       : {}
 
+  const tags = parseTagsValue(raw.tags ?? meta.tags)
+
   return {
     ...meta,
     ...raw,
     path: raw.path,
     title: raw.title,
     description: raw.description,
+    tags,
     meta,
   } as ProjectRecord
 }
@@ -73,15 +97,18 @@ export function resolveLayoutType(
 }
 
 export function projectTags(project: ProjectRecord): string[] {
-  const tags = project.tags
+  return parseTagsValue(project.tags ?? project.meta?.tags)
+}
 
-  if (!tags) {
-    return []
+export function projectMatchesFilter(
+  project: ProjectRecord,
+  filter: string,
+): boolean {
+  if (filter === 'all') {
+    return true
   }
-  if (Array.isArray(tags)) {
-    return tags
-  }
-  return tags.split(/\s+/).filter(Boolean)
+
+  return projectTags(project).includes(filter.toLowerCase())
 }
 
 export async function fetchAllProjects(): Promise<ProjectRecord[]> {

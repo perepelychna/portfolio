@@ -6,7 +6,11 @@ role: "Business Product Designer"
 markets: "B2B + B2C"
 duration: "2017 — Present"
 url: "https://www.inserviss.app"
-tags: "business brand product uiux"
+tags:
+  - business
+  - brand
+  - product
+  - uiux
 
 # Категория 01: Challenge
 challenge_num: "01"
