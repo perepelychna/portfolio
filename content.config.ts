@@ -1,16 +1,18 @@
 import { defineContentConfig, defineCollection } from '@nuxt/content'
 import { z } from 'zod'
 
+const stringList = z.array(z.string()).optional()
+
 const projectSchema = z.object({
   subtitle: z.string().optional(),
+  hero_description: z.string().optional(),
+  hero_tagline: z.string().optional(),
   client: z.string().optional(),
   role: z.string().optional(),
   markets: z.string().optional(),
   duration: z.string().optional(),
   url: z.string().optional(),
-  tags: z
-    .union([z.string(), z.array(z.string())])
-    .optional(),
+  tags: z.union([z.string(), z.array(z.string())]).optional(),
   layoutType: z.enum(['inserviss', 'neirotrace', 'default']).optional(),
   challenge_num: z.string().optional(),
   challenge_tag: z.string().optional(),
@@ -19,6 +21,24 @@ const projectSchema = z.object({
   challenge_core_insight: z.string().optional(),
   challenge_solution: z.string().optional(),
   challenge_text: z.string().optional(),
+  stat_find_val: z.string().optional(),
+  stat_find_lbl: z.string().optional(),
+  stat_book_val: z.string().optional(),
+  stat_book_lbl: z.string().optional(),
+  stat_provider_val: z.string().optional(),
+  stat_provider_lbl: z.string().optional(),
+  stat_retain_val: z.string().optional(),
+  stat_retain_lbl: z.string().optional(),
+  solution_title: z.string().optional(),
+  solution_intro: z.string().optional(),
+  business_challenges: stringList,
+  consumer_pain_points: stringList,
+  tools: stringList,
+  flow_title: z.string().optional(),
+  flow_text: z.string().optional(),
+  scheduler_title: z.string().optional(),
+  scheduler_features: stringList,
+  impact_title: z.string().optional(),
   stat_hours_val: z.string().optional(),
   stat_hours_lbl: z.string().optional(),
   stat_lessons_val: z.string().optional(),
@@ -29,6 +49,23 @@ const projectSchema = z.object({
   testimonial_author: z.string().optional(),
   testimonial_role: z.string().optional(),
   testimonial_meta: z.string().optional(),
+  identity_title: z.string().optional(),
+  identity_font: z.string().optional(),
+  identity_colors: z.string().optional(),
+  problem_cards: stringList,
+  journey_title: z.string().optional(),
+  journey_steps: stringList,
+  metrics_title: z.string().optional(),
+  metric_cards: stringList,
+  metrics_banner: z.string().optional(),
+  tech_title: z.string().optional(),
+  tech_features: stringList,
+  ai_title: z.string().optional(),
+  ai_cards: stringList,
+  philosophy_title: z.string().optional(),
+  philosophy_cards: stringList,
+  philosophy_quote: z.string().optional(),
+  outcome_cards: stringList,
 })
 
 export default defineContentConfig({
